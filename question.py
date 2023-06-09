@@ -1,44 +1,41 @@
-from collections import deque
+# 12
+# Junkyu 50 60 100
+# Sangkeun 80 60 50
+# Sunyoung 80 70 100
+# Soong 50 60 90
+# Haebin 50 60 100
+# Kangsoo 60 80 100
+# Donghyuk 80 60 100
+# Sei 70 70 70
+# Wonseob 70 70 90
+# Sanghyun 70 70 80
+# nsj 80 80 80
+# Taewhan 50 60 90
+
+n = int(input())
+
+student = []
+
+for _ in range(n):
+    name, kr, en, math = input().split()
+    kr = int(kr)
+    en = int(en)
+    math = int(math)
+    student.append([name, kr, en, math])
 
 
-def bfs(graph, start, visited, length):
+# student.sort(key=lambda x: (-x[1],x[2],-x[3],x[0]))
+# result = student
 
-    queue = deque([start])
-
-    visited[start] = True
-    length[start] = 0
-
-    while queue:
-        v = queue.popleft()
-
-        for i in graph[v]:
-            if not visited[i]:
-                queue.append(i)
-                visited[i] = True
-                length[i] = length[v]+1
+result = sorted(student,key=lambda x: (-x[1],x[2],-x[3],x[0]))
 
 
+print(result[0])
 
-n, m, k, x = map(int, input().split())
+# for i in student:
+#     print(i[0])
+    
+# print()
 
-graph = [[] for _ in range(n+1)]
-
-for _ in range(m):
-
-    index, num = map(int, input().split())
-    graph[index].append(num)
-
-visited = [False]*(n+1)
-length = [0]*(n+1)
-
-bfs(graph, x, visited, length)
-
-if not k in length:
-    print(-1)
-
-for i in range(len(length)):
-    if length[i] == k:
-        print(i)
-        
-
-
+# for i in result:
+#     print(i[0])
