@@ -1,41 +1,31 @@
-# 12
-# Junkyu 50 60 100
-# Sangkeun 80 60 50
-# Sunyoung 80 70 100
-# Soong 50 60 90
-# Haebin 50 60 100
-# Kangsoo 60 80 100
-# Donghyuk 80 60 100
-# Sei 70 70 70
-# Wonseob 70 70 90
-# Sanghyun 70 70 80
-# nsj 80 80 80
-# Taewhan 50 60 90
+module_variable = 0
 
-n = int(input())
-
-student = []
-
-for _ in range(n):
-    name, kr, en, math = input().split()
-    kr = int(kr)
-    en = int(en)
-    math = int(math)
-    student.append([name, kr, en, math])
-
-
-# student.sort(key=lambda x: (-x[1],x[2],-x[3],x[0]))
-# result = student
-
-result = sorted(student,key=lambda x: (-x[1],x[2],-x[3],x[0]))
-
-
-print(result[0])
-
-# for i in student:
-#     print(i[0])
+def binary_search(array, target, start, end):
     
-# print()
+    if start > end:
+        return None
+    
+    mid = (start + end)//2
+    
+    global module_variable
+    
+    if array[mid] == target:
+        module_variable += 1
+    
+    binary_search(array, target, start, mid-1)
+    
+    binary_search(array, target, mid+1, end)
+    
+    
 
-# for i in result:
-#     print(i[0])
+N, x = map(int, input().split())
+
+array = list(map(int, input().split()))
+
+binary_search(array,x,0,N-1)
+
+if module_variable == 0:
+    print(-1)
+else:
+    print(module_variable)
+
