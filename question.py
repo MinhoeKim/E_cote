@@ -1,31 +1,16 @@
-module_variable = 0
+from bisect import bisect_left, bisect_right
 
-def binary_search(array, target, start, end):
-    
-    if start > end:
-        return None
-    
-    mid = (start + end)//2
-    
-    global module_variable
-    
-    if array[mid] == target:
-        module_variable += 1
-    
-    binary_search(array, target, start, mid-1)
-    
-    binary_search(array, target, mid+1, end)
-    
-    
+def count_by_range(array, left_value, right_value):
+    right_index = bisect_right(array, right_value)
+    left_index=  bisect_left(array, left_value)
+    return right_index - left_index
 
-N, x = map(int, input().split())
-
+n, x = map(int, input().split())
 array = list(map(int, input().split()))
 
-binary_search(array,x,0,N-1)
+count = count_by_range(array, x, x)
 
-if module_variable == 0:
+if count == 0:
     print(-1)
 else:
-    print(module_variable)
-
+    print(count)
