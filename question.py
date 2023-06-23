@@ -1,39 +1,59 @@
-T = input()
-n, m = map(int, input().split())
-array = list(map(int, input().split()))
+T = int(input())
 
-gold = []
-start = 0
-for i in range(n):
+while T != 0:
+    n, m = map(int, input().split())
+    array = list(map(int, input().split()))
 
-    gold.append(array[start:m*(i+1)])
-    start += m
+    gold = []
+    start = 0
+    for i in range(n):
 
-del_max = 0
-row = None
-column: None
-
-for i in range(n):
-    if del_max < gold[i][0]:
-        del_max = gold[i][0]
-        row = i
-
-del_sum = 0
+        gold.append(array[start:m*(i+1)])
+        start += m
 
 
-for j in range(m):
+    row = None
 
-    if row == 0:
-        del_value = max(gold[row][j], gold[row+1][j])
-        del_sum += del_value
-        row, column = gold.index(del_value)
+    del_max = 0
+    for i in range(n):
+        if del_max < gold[i][0]:
+            del_max = gold[i][0]
+            row = i
 
-    elif row == n:
-        del_value = max(gold[row][j], gold[row-1][j])
-        del_sum += del_value
-        row, column = gold.index(del_value)
 
-    else:
-        del_value = max(gold[row][j], gold[row+1][j], gold[row-1][j])
-        del_sum += del_value
-        row, column = gold.index(del_value)
+    del_sum = 0
+
+
+    for j in range(m):
+
+        if row == 0:
+            compare = []
+            compare.extend([gold[row][j],gold[row+1][j]])
+            del_value = max(compare)
+            del_sum += del_value
+            max_index =  compare.index(del_value)
+            
+            row = row + max_index
+
+        elif row == n-1:
+            compare = []
+            compare.extend([gold[row-1][j],gold[row][j]])
+            del_value = max(compare)
+            del_sum += del_value
+            max_index =  compare.index(del_value)
+            
+            row = row + max_index -1
+
+        else:
+            compare = []
+            compare.extend([gold[row-1][j],gold[row][j],gold[row+1][j]])
+            del_value = max(compare)
+            del_sum += del_value
+            max_index =  compare.index(del_value)
+            
+            row = row + max_index -1
+        
+        
+    print(del_sum)
+    
+    T -= 1
