@@ -1,59 +1,46 @@
-T = int(input())
+# 5
+# 14
+# 1 2 2
+# 1 3 3
+# 1 4 1
+# 1 5 10
+# 2 4 2
+# 3 4 1
+# 3 5 1
+# 4 5 3
+# 3 5 10
+# 3 1 8
+# 1 4 2
+# 5 1 7
+# 3 4 2
+# 5 2 4
 
-while T != 0:
-    n, m = map(int, input().split())
-    array = list(map(int, input().split()))
+n = int(input())
 
-    gold = []
-    start = 0
-    for i in range(n):
+m = int(input())
 
-        gold.append(array[start:m*(i+1)])
-        start += m
-
-
-    row = None
-
-    del_max = 0
-    for i in range(n):
-        if del_max < gold[i][0]:
-            del_max = gold[i][0]
-            row = i
-
-
-    del_sum = 0
+array = [[0]*(n+1) for i in range(n+1)]
 
 
-    for j in range(m):
+for i in range(m):
+    i, j, distance = map(int, input().split())
 
-        if row == 0:
-            compare = []
-            compare.extend([gold[row][j],gold[row+1][j]])
-            del_value = max(compare)
-            del_sum += del_value
-            max_index =  compare.index(del_value)
-            
-            row = row + max_index
+    if array[i][j] == 0:
+        array[i][j] = distance
+    elif distance < array[i][j]:
+        array[i][j] = distance
+print(array)
 
-        elif row == n-1:
-            compare = []
-            compare.extend([gold[row-1][j],gold[row][j]])
-            del_value = max(compare)
-            del_sum += del_value
-            max_index =  compare.index(del_value)
-            
-            row = row + max_index -1
+for k in range(1, n+1):
+    for i in range(1, n+1):
+        for j in range(1, n+1):
+            if i != j and array[i][k] != 0 and array[k][j] != 0:
+                if array[i][j] == 0:
+                    array[i][j] = array[i][k]+array[k][j]
+                else:
+                    array[i][j] = min(array[i][j], array[i][k]+array[k][j])
 
-        else:
-            compare = []
-            compare.extend([gold[row-1][j],gold[row][j],gold[row+1][j]])
-            del_value = max(compare)
-            del_sum += del_value
-            max_index =  compare.index(del_value)
-            
-            row = row + max_index -1
-        
-        
-    print(del_sum)
-    
-    T -= 1
+for i in range(1, n+1):
+    for j in range(1, n+1):
+        print(array[i][j],end=' ')
+    print()
