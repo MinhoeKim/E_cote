@@ -19,7 +19,9 @@ n = int(input())
 
 m = int(input())
 
-array = [[0]*(n+1) for i in range(n+1)]
+N, M = map(int, input().split())
+
+array = [[0]*(N+1)]
 
 
 for i in range(m):
