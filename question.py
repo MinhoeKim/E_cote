@@ -1,46 +1,57 @@
-# 5
-# 14
-# 1 2 2
-# 1 3 3
-# 1 4 1
-# 1 5 10
-# 2 4 2
-# 3 4 1
-# 3 5 1
-# 4 5 3
-# 3 5 10
-# 3 1 8
-# 1 4 2
-# 5 1 7
-# 3 4 2
-# 5 2 4
+def find_parent(parent, x):
+    if parent[x] != x:
+        parent[x] = find_parent(parent, parent[x])
+    return parent[x]
 
-n = int(input())
-
-m = int(input())
-
-array = [[0]*(n+1) for i in range(n+1)]
+def union_parent(parent, a, b):
+    a = find_parent(parent, a)
+    b = find_parent(parent, b)
+    if a < b:
+        parent[b] = a
+    else:
+        parent[a] = b
 
 
-for i in range(m):
-    i, j, distance = map(int, input().split())
+N, M = map(int, input().split())
 
-    if array[i][j] == 0:
-        array[i][j] = distance
-    elif distance < array[i][j]:
-        array[i][j] = distance
+array = [[0,0,0,0,0,0]]
+
+
+for i in range(N):
+    temp = [0]
+    temp.extend(map(int, input().split()))
+    array.append(temp)
+
 print(array)
 
-for k in range(1, n+1):
-    for i in range(1, n+1):
-        for j in range(1, n+1):
-            if i != j and array[i][k] != 0 and array[k][j] != 0:
-                if array[i][j] == 0:
-                    array[i][j] = array[i][k]+array[k][j]
-                else:
-                    array[i][j] = min(array[i][j], array[i][k]+array[k][j])
 
-for i in range(1, n+1):
-    for j in range(1, n+1):
-        print(array[i][j],end=' ')
-    print()
+parent = [0]*(N+1)
+
+for i in range(N+1):
+    parent[i] = i
+print(parent)    
+
+
+for i in range (1,N+1):
+    for j in range (1,N+1):
+        if array[i][j] == 1:
+            union_parent(parent,i,j)
+            
+print(parent)
+
+input_node = list(map(int,input().split()))
+
+select = []
+print(input_node)
+
+for i in input_node:
+    select.append(parent[i])
+
+result = set(select)
+
+print(result)
+
+if len(result) == 1:
+    print('Yes')
+else:
+    print('No')
