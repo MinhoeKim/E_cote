@@ -1,15 +1,14 @@
+
 string = input()
 
-number = [int(i) for i in string]
+number = [int(i) for i in string if ord(i)<60 ]
+print(string)
+abc = [i for i in string if ord(i)>60]
 
-sum = number[0]
-for i in range(len(number)-1):
-	
-	temp = max((sum*number[i+1], (sum+number[i+1])))
-	
-	if temp == sum*number[i+1]:
-		sum = sum*number[i+1]
-	else:
-		sum = sum+number[i+1]
-		
-print(sum)
+abc.sort()
+number = sum(number)
+
+for i in abc:
+  print(i,end='')
+
+print(number)
