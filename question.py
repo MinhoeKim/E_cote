@@ -1,14 +1,59 @@
+n, m = map(int, input().split())
+array = []
+temp = [[0]*m for _ in range(n)]
 
-string = input()
+for i in range(m):
+    array.append(list(map(int, input().split())))
 
-number = [int(i) for i in string if ord(i)<60 ]
-print(string)
-abc = [i for i in string if ord(i)>60]
+dx = [-1, 0, 1, 0]
+dy = [0, 1, 0, -1]
 
-abc.sort()
-number = sum(number)
+def virus(x, y):
+    for i in range(4):
+        nx = x + dx[i]
+        ny = y + dy[i]
+        
+        if nx >= 0 and nx < n and ny >= 0 and ny < m:
+            if temp[nx][ny] == 0:
+                temp[nx][ny] = 2
+                virus(nx, ny)
 
-for i in abc:
-  print(i,end='')
-
-print(number)
+def get_score():
+    score = 0
+    for i in range(n):
+        for j in range(m):
+            if temp[i][j] == 0:
+                score +=1
+                
+    return score
+                
+def dfs(count):
+    global result
+    
+    if count == 3:
+        for i in range(n):
+            for j in range(m):
+                temp[i][j] = array[i][j]
+                
+        for i in range(n):
+            for j in range(m):
+                if temp[i][j] == 2:
+                    virus(i,j)
+                    
+        result = max(result, get_score())
+        return
+    
+    for i in range(n):
+        for j in range(m):
+            if array[i][j] == 0:
+                array[i][j] = 1
+                count += 1
+                dfs(count)
+                array[i][j] = 0
+                count -= 1
+                
+dfs(0)
+print(result)
+                
+        
+    
