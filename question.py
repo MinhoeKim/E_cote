@@ -1,30 +1,23 @@
-# INF = int(1e9)
+def binary_search(array: list[int], start, end):
+    while start <= end:
+        mid = (start + end)//2
 
-# N = int(input())
-
-# house = list(map(int, input().split()))
-
-# min_num = min(house)
-# max_num = max(house)
-
-
-# min_sum = INF
-# point = 0
-# for i in range(min_num,max_num+1):
-#     length = 0
-#     for j in house:
-#         length += abs(i-j)
-#     if length < min_sum:
-#         min_sum = length
-#         point = i
-        
-# print(point)
+        if array[mid] == mid:
+            return mid
+        elif array[mid] > mid:
+            end = mid - 1
+        else:
+            start = mid + 1
+    return None
 
 
-n = int(input())
-data = list(map(int, input().split()))
-data.sort()
+N = int(input())
 
-print(3/2)
-print(data[(n-1)//2])
-    
+array = list(map(int, input().split()))
+
+result = binary_search(array, 0, len(array)-1)
+
+if result == None:
+    print(-1)
+else:
+    print(result)
