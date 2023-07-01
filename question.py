@@ -1,23 +1,20 @@
-def binary_search(array: list[int], start, end):
-    while start <= end:
-        mid = (start + end)//2
+n = int(input())
+tower = []
+for i in range(n):
+    tower.append(list(map(int, input().split())))
 
-        if array[mid] == mid:
-            return mid
-        elif array[mid] > mid:
-            end = mid - 1
+temp = [[]]
+
+for i in range(n-1):
+    temp.append(tower[i])
+
+
+for i in range(n-1, 0, -1):
+    for j in range(len(tower[i])-1):
+        if tower[i][j] > tower[i][j+1]:
+            temp[i][j] = tower[i][j]+temp[i][j]
         else:
-            start = mid + 1
-    return None
+            temp[i][j] = tower[i][j+1]+temp[i][j]
 
 
-N = int(input())
-
-array = list(map(int, input().split()))
-
-result = binary_search(array, 0, len(array)-1)
-
-if result == None:
-    print(-1)
-else:
-    print(result)
+print(*temp[1])
