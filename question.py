@@ -1,31 +1,26 @@
-s = input()
+n = int(input())
 
-answer = len(s)
+stages = list(map(int, input().split()))
 
-for i in range(1,len(s)):
-    str_temp = s[0:i]
-    count = 1
-    compressed = ''
-    for j in range(i, len(s), i):
-        
-        # if i+j >= len(s)+1:
-        #     compressed += str(count) + s[j:]
-        #     break
-        
-        if str_temp == s[j:j+i]:
-            count += 1
-            
-        else: 
-            compressed += str(count) + str_temp if count >= 2 else str_temp
-            str_temp = s[j:j+i]
-            count = 1
-        
-        if j+i >= len(s):
-            compressed += str(count) + str_temp if count >= 2 else str_temp
-            break
+stages.sort()
 
 
-    print(compressed)        
-    answer = min(answer,len(compressed))
+per = []
+count = 0
+length = len(stages)
+
+for i in range(1,n+1):
+    count = stages.count(i)
+    
+    per.append((i,count/length))
+    
+    length -= count
+
+per = sorted(per, key=lambda x:x[1], reverse=True)
+
+answer = [i[0] for i in per]    
 
 print(answer)
+    
+     
+        
