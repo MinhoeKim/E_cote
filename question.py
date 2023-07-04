@@ -1,34 +1,31 @@
-N, C = map(int, input().split())
+s = input()
 
-x = []
-for i in range(N):
-    x.append(int(input()))
-    
-x.sort()
+answer = len(s)
 
-start = 1
-end = x[-1] - x[0]
-result = 0
-
-while start <= end :
-    mid = (start+end)//2
-    value = x[0]
+for i in range(1,len(s)):
+    str_temp = s[0:i]
     count = 1
-    
-    for i in range(1,N):
-        if x[i] >= value+mid:
-            value = x[i]
+    compressed = ''
+    for j in range(i, len(s), i):
+        
+        # if i+j >= len(s)+1:
+        #     compressed += str(count) + s[j:]
+        #     break
+        
+        if str_temp == s[j:j+i]:
             count += 1
-    
-    if count >= C:
-        start = mid +1
-        result = mid
-    else:
-        end = mid -1
-        
-print(result)
-        
             
+        else: 
+            compressed += str(count) + str_temp if count >= 2 else str_temp
+            str_temp = s[j:j+i]
+            count = 1
         
-    
-    
+        if j+i >= len(s):
+            compressed += str(count) + str_temp if count >= 2 else str_temp
+            break
+
+
+    print(compressed)        
+    answer = min(answer,len(compressed))
+
+print(answer)
