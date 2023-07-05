@@ -1,26 +1,40 @@
-n = int(input())
+N = int(input())
 
-stages = list(map(int, input().split()))
+array = []
+for i in range(N):
+  t, p = map(int, input().split())
+  array.append((t,p))
 
-stages.sort()
+p_sum_max = 0
+day = 0
+
+for t0, p0 in array:
+  print(t0,p0)
+
+  index = t0+day
+  if index > len(array):
+    break;
+  p_sum = p0
+  day += 1
+  while True:
+    if index > len(array)-1:
+      break
+
+    t1, p1 = array[index]
+    if index == len(array)-1:
+      if t1 > 1:
+        break
 
 
-per = []
-count = 0
-length = len(stages)
 
-for i in range(1,n+1):
-    count = stages.count(i)
+    print('인덱스',index+1)
     
-    per.append((i,count/length))
-    
-    length -= count
+    index += t1
 
-per = sorted(per, key=lambda x:x[1], reverse=True)
+      
+    p_sum += p1
 
-answer = [i[0] for i in per]    
-
-print(answer)
-    
-     
-        
+  p_sum_max = max(p_sum_max,p_sum)
+  print('썸',p_sum_max)  
+print(p_sum_max)
+  
