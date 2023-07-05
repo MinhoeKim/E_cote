@@ -1,40 +1,40 @@
-N = int(input())
+import heapq
 
-array = []
-for i in range(N):
-  t, p = map(int, input().split())
-  array.append((t,p))
+INF = int(1e9)
 
-p_sum_max = 0
-day = 0
+dx = [-1, 0, 1, 0]
+dy = [0, 1, 0, -1]
 
-for t0, p0 in array:
-  print(t0,p0)
+n = int(input())
 
-  index = t0+day
-  if index > len(array):
-    break;
-  p_sum = p0
-  day += 1
-  while True:
-    if index > len(array)-1:
-      break
+graph = []
+for i in range(n):
+  graph.append(list(map(int, input().split())))
 
-    t1, p1 = array[index]
-    if index == len(array)-1:
-      if t1 > 1:
-        break
+distance = [[INF] * n for _ in range(n)]
 
+x, y = 0, 0
 
+q = [(graph[x][y], x, y)]
+distance[x][y] = graph[x][y]
 
-    print('인덱스',index+1)
-    
-    index += t1
+while q:
+  dist, x, y = heapq.heappop(q)
 
-      
-    p_sum += p1
+  if distance[x][y] < dist:
+    continue
 
-  p_sum_max = max(p_sum_max,p_sum)
-  print('썸',p_sum_max)  
-print(p_sum_max)
-  
+  for i in range(4):
+    nx = x + dx[i]
+    ny = y + dy[i]
+
+    if nx < 0 or nx >= n or ny < 0 or ny >= n:
+      continue
+
+    cost = dist + graph[nx][ny]
+
+    if cost < distance[nx][ny]:
+      distance[nx][ny] = cost
+      heapq.heappush(q, (cost, nx, ny))
+
+print(distance[n - 1][n - 1])
