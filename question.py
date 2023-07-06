@@ -1,40 +1,40 @@
-import heapq
+def find_parent(parent, x):
+  if parent[x] != x:
+    parent[x] = find_parent(parent, parent[x])
+  return parent[x]
 
-INF = int(1e9)
+def union_parent(parent, a, b):
+  a = find_parent(parent, a)
+  b = find_parent(parent, b)
+  if a < b:
+    parent[b] = a
+  else:
+    parent[a] = b
 
-dx = [-1, 0, 1, 0]
-dy = [0, 1, 0, -1]
+n, m = map(int, input().split())
+parent = [0] * (n+1)
 
-n = int(input())
+edges = []
+result = 0
 
-graph = []
-for i in range(n):
-  graph.append(list(map(int, input().split())))
+for i in range(1,n+1):
+  parent[i] = i
 
-distance = [[INF] * n for _ in range(n)]
+for _ in range(m):
+  x, y ,z = map(int, input().split())
+  edges.append((z, x, y))
 
-x, y = 0, 0
+edges.sort()
+total = 0
 
-q = [(graph[x][y], x, y)]
-distance[x][y] = graph[x][y]
+for edge in edges:
+  cost, a, b = edge
+  total += cost
 
-while q:
-  dist, x, y = heapq.heappop(q)
+  if find_parent(parent, a) != find_parent(parent, b):
+    union_parent(parent, a, b)
+    result += cost
 
-  if distance[x][y] < dist:
-    continue
+print(total - result)
 
-  for i in range(4):
-    nx = x + dx[i]
-    ny = y + dy[i]
 
-    if nx < 0 or nx >= n or ny < 0 or ny >= n:
-      continue
-
-    cost = dist + graph[nx][ny]
-
-    if cost < distance[nx][ny]:
-      distance[nx][ny] = cost
-      heapq.heappush(q, (cost, nx, ny))
-
-print(distance[n - 1][n - 1])
