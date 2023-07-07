@@ -1,40 +1,49 @@
-def find_parent(parent, x):
-  if parent[x] != x:
-    parent[x] = find_parent(parent, parent[x])
-  return parent[x]
+def rotate_a_matrix_by_90_degree(a):
+  n = len(a)
+  m = len(a[0])
+  result = [[0]*n for _ in range(m)]
+  for i in range(n):
+    for j in range(m):
+      result[j][n-i-1] = a[i][j]
+  return result
 
-def union_parent(parent, a, b):
-  a = find_parent(parent, a)
-  b = find_parent(parent, b)
-  if a < b:
-    parent[b] = a
-  else:
-    parent[a] = b
-
-n, m = map(int, input().split())
-parent = [0] * (n+1)
-
-edges = []
-result = 0
-
-for i in range(1,n+1):
-  parent[i] = i
-
-for _ in range(m):
-  x, y ,z = map(int, input().split())
-  edges.append((z, x, y))
-
-edges.sort()
-total = 0
-
-for edge in edges:
-  cost, a, b = edge
-  total += cost
-
-  if find_parent(parent, a) != find_parent(parent, b):
-    union_parent(parent, a, b)
-    result += cost
-
-print(total - result)
+def check(new_lock):
+  lock_length = len(new_lock) // 3
+  for i in range(lock_length, lock_length * 2):
+    for j in range(lock_length,lock_length * 2):
+      if new_lock[i][j] != 1:
+        return False
+  return True
 
 
+m, n = map(int, input().split())
+
+key = []
+lock = []
+
+for i in range(m):
+  key.append(list(map(int,input().split())))
+
+for i in range(n):
+  lock.append(list(map(int, input().split())))
+
+new_lock = [[0]*(n*3) for _ in range(n*3)]
+
+for i in range(n):
+  for j in range(n):
+    new_lock[i + n][j + n] = lock[i][j]
+
+for rotation in range(4):
+  key = rotate_a_matrix_by_90_degree(key)
+  for x in range(n*2):
+    for y in range(n*2):
+      for i in range(m):
+        for j in range(m):
+          new_lock[x+i][y+j] += key[i][j]
+      if check(new_lock)== True:
+          print(True)
+          exit(0)
+      for i in range(m):
+        for j in range(m):
+          new_lock[x+i][y+j] -= key[i][j]
+print(False)
