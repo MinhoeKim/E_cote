@@ -29,7 +29,7 @@ def Separate(w):
         for i in range(1, len(w)+1):
             print(w[:i])
             L, R = Balance_s(w[:i])
-            
+
             if L == R:
                 u = w[:i]
                 v = w[i:]
@@ -54,10 +54,12 @@ def Separate(w):
                     break
             else:
                 continue
+    else:
+        print('False')
 
     return s
 
 
-s = '()))((()'
+s = '()))((()()'
 
 print(Separate(s))
