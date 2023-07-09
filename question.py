@@ -1,65 +1,24 @@
-def Balance_s(w):
-    countL = 0
-    countR = 0
-    countL += w.count('(')
-    countR += w.count(')')
+n = int(input())
 
-    return countL, countR
+card = []
 
+for i in range(n):
+    card.append(int(input()))
 
-def Right_s(s):
-    count = 0
+card.sort()
 
-    for i in s:
-        if i == '(':
-            count += 1
-        elif i == ')':
-            count -= 1
+print(card)
 
-        if count < 0:
-            return False
+onetwo = card[0]+card[1]
+sum = 0
+sum += onetwo
 
-    return True
+for i in range(2,n):
 
+   onetwo = onetwo + card[i]
+   sum += onetwo
 
-def Separate(w):
-    count_L, count_R = Balance_s(w)
-    s = ''
-    if count_L == count_R:
-        for i in range(1, len(w)+1):
-            print(w[:i])
-            L, R = Balance_s(w[:i])
-
-            if L == R:
-                u = w[:i]
-                v = w[i:]
-                if Right_s(u) == True:
-                    s += w[:i]
-                    s += Separate(v)
-                    # break로 끊어주기
-                    break
-                else:
-                    s += '('
-                    s += Separate(v)
-                    s += ')'
-
-                    temp = u[1:len(u)-1]
-
-                    for i in temp:
-                        if i == '(':
-                            s += ')'
-                        else:
-                            s += '('
-                    # break로 끊어주기
-                    break
-            else:
-                continue
-    else:
-        print('False')
-
-    return s
+   
+print(sum)
 
 
-s = '()))((()()'
-
-print(Separate(s))
