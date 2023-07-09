@@ -1,24 +1,24 @@
-n = int(input())
+words = ['frodo', 'front', 'frost', 'frozen', 'frame', 'kakao']
 
-card = []
+queries = ['fro??', '????o', 'fr???', 'fro???', 'pro?']
 
-for i in range(n):
-    card.append(int(input()))
+answer = [0,0,0,0,0]
 
-card.sort()
-
-print(card)
-
-onetwo = card[0]+card[1]
-sum = 0
-sum += onetwo
-
-for i in range(2,n):
-
-   onetwo = onetwo + card[i]
-   sum += onetwo
-
-   
-print(sum)
-
-
+for i in range(len(queries)):
+    query = queries[i]
+    count = query.count('?')
+    length = len(query)
+    first = query[0]
+    if first == '?':
+        temp = query[count:]
+        for word in words:
+            if len(query)==len(word) and word[count:] == temp:
+                answer[i] += 1
+    else:
+        temp = query[:len(query)-count]
+        for word in words:
+            if len(query) == len(word) and word[:len(query)-count] == temp:
+                answer[i] += 1
+                
+print(answer)
+        
