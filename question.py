@@ -1,47 +1,51 @@
-import heapq
+def find_parent(parent, x):
+  if parent[x] != x:
+    parent[x] = find_parent(parent,parent[x])
+  return parent[x]
+def union_parent(parent, a, b):
+  a = find_parent(parent, a)
+  b = find_parent(parent, b)
 
-INF = int(1e9)
+  if a < b:
+    parent[b] = a
+  else:
+    parent[a] = b
 
-n, m = map(int, input().split())
+n = int(input())
+parent = [0] * (n+1)
 
-graph = [[] for i in range(n+1)]
-
-distance = [INF] * (n+1)
-
-for _ in range(m):
-  a,b = map(int, input().split())
-  graph[a].append((b,1))
-  graph[b].append((a,1))
-start = 1
-
-def dijkstra(start):
-  q = []
-  heapq.heappush(q, (0, start))
-  distance[start] = 0
-  while q:
-    dist, now =  heapq.heappop(q)
-    if distance[now] < dist:
-      continue
-    for i in graph[now]:
-      cost = dist + i[1]
-      if cost < distance[i[0]]:
-        distance[i[0]] = cost
-        heapq.heappush(q,(cost,1[0]))
-
-dijkstra(start)
-
-max_node = 0
-
-max_distance = 0
-
-result = []
+edges = []
+result = 0
 
 for i in range(1, n+1):
-  if max_distance < distance[i]:
-    max_node = i
-    max_distance = distance[i]
-    result = [max_node]
-  elif max_distance == distance[i]:
-    result.append(i)
+  parent[i] = i
 
-print(max_node, max_distance, len(result))
+x = []
+y = []
+z = []
+
+for i in range(1, n+1):
+  data = list(map(int, input().split()))
+  x.append((data[0], i))
+  y.append((data[1], i))
+  z.append((data[2], i))
+
+x.sort()
+y.sort()
+z.sort()
+
+for i in range(n - 1):
+  edges.append((x[i+1][0] - x[i][0], x[i][1], x[i+1][1]))
+  edges.append((y[i+1][0] - y[i][0], y[i][1], y[i+1][1]))
+  edges.append((z[i+1][0] - z[i][0], z[i][1], z[i+1][1]))
+
+edges.sort()
+
+for edge in edges:
+  cost, a, b = edge  
+  if find_parent(parent, a) != find_parent(parent, b):
+    union_parent(parent, a, b)
+    result += cost
+
+
+print(result)
