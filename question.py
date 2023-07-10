@@ -1,24 +1,13 @@
-words = ['frodo', 'front', 'frost', 'frozen', 'frame', 'kakao']
+n = int(input())
 
-queries = ['fro??', '????o', 'fr???', 'fro???', 'pro?']
+soldier = list(map(int, input().split()))
 
-answer = [0,0,0,0,0]
+count = 0
 
-for i in range(len(queries)):
-    query = queries[i]
-    count = query.count('?')
-    length = len(query)
-    first = query[0]
-    if first == '?':
-        temp = query[count:]
-        for word in words:
-            if len(query)==len(word) and word[count:] == temp:
-                answer[i] += 1
-    else:
-        temp = query[:len(query)-count]
-        for word in words:
-            if len(query) == len(word) and word[:len(query)-count] == temp:
-                answer[i] += 1
-                
-print(answer)
-        
+for i in range(len(soldier)-1):
+  pre = soldier[i]
+  next = soldier[i+1]
+  if pre < next:
+    count +=1
+
+print(count)
