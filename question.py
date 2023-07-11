@@ -1,51 +1,89 @@
-def find_parent(parent, x):
-  if parent[x] != x:
-    parent[x] = find_parent(parent,parent[x])
-  return parent[x]
-def union_parent(parent, a, b):
-  a = find_parent(parent, a)
-  b = find_parent(parent, b)
-
-  if a < b:
-    parent[b] = a
-  else:
-    parent[a] = b
+from collections import deque
 
 n = int(input())
-parent = [0] * (n+1)
+k = int(input())
+apples = []
+board = [[0] * n for i in range(n)]
 
-edges = []
-result = 0
+for i in range(k):
+  x, y = map(int, input().split())
+  apples.append((x-1, y-1))
 
-for i in range(1, n+1):
-  parent[i] = i
+for apple in apples:
+  x, y = apple
+  board[x][y] = 2
 
-x = []
-y = []
-z = []
+L = int(input())
 
-for i in range(1, n+1):
-  data = list(map(int, input().split()))
-  x.append((data[0], i))
-  y.append((data[1], i))
-  z.append((data[2], i))
+X_C = []
 
-x.sort()
-y.sort()
-z.sort()
+east = (0,1)
+west = (0,-1)
+south = (1,0)
+north = (-1,0)
 
-for i in range(n - 1):
-  edges.append((x[i+1][0] - x[i][0], x[i][1], x[i+1][1]))
-  edges.append((y[i+1][0] - y[i][0], y[i][1], y[i+1][1]))
-  edges.append((z[i+1][0] - z[i][0], z[i][1], z[i+1][1]))
+direct_xy = [south,west,north]
+direct_xy = deque(direct_xy)
 
-edges.sort()
+for i in range(L):
+  X, C = input().split()
+  X = int(X)
+  X_C.append((X, C))
+X_C = deque(X_C)
 
-for edge in edges:
-  cost, a, b = edge  
-  if find_parent(parent, a) != find_parent(parent, b):
-    union_parent(parent, a, b)
-    result += cost
+time = 0
+board[0][0] = 1
+direct = east
+x, y = 0, 0
 
+loop = True
+stop = 0
+snake = [(0,0)]
+snake = deque(snake)
+while loop == True:
+  
+  if X_C:
+    X, C = X_C.popleft()  
+  
+  
+  while True:
+    
+    time += 1
+    next_x = x + direct[0]
+    next_y = y + direct[1]
+    
+    if next_x < 0 or next_y < 0 or next_x >= n or next_y >= n:
+      loop = False
+      break
 
-print(result)
+    if board[next_x][next_y] == 0:
+      
+      board[next_x][next_y] = 1
+      a,b = snake.popleft()
+      board[a][b] = 0
+      snake.append((next_x,next_y))
+      x = next_x
+      y = next_y
+    elif board[next_x][next_y] == 2:
+      
+      board[next_x][next_y] = 1
+      snake.append((next_x,next_y))
+      x = next_x
+      y = next_y
+    elif board[next_x][next_y] == 1:
+      loop = False
+      break
+    
+    if time == X:
+      if C == 'D':
+        direct_xy.append(direct)
+        direct = direct_xy.popleft()
+        break
+      if C == 'L':
+        direct_xy.appendleft(direct)
+        direct = direct_xy.pop()
+        break
+    
+  
+print(time)
+
