@@ -1,17 +1,21 @@
-n, m = map(int, input().split())
+n = int(input())
 
-balls = list(map(int, input().split()))
+array = []
 
+array.append(1)
+count = 1
+while len(array) <= n:
+  array.append(2*count)
+  array.append(3*count)
+  array.append(5*count)
+  array = set(array)
+  array = list(array)
+  count += 1
+print(count)  
 
-count = 0
-for i in range(len(balls)-1):
-    first = balls[i]
-    for j in range(i+1, len(balls)):
-        second = balls[j]
-        if first != second:
-            print(i+1, j+1)
-            print('무게', first, second)
-            print()
-            count += 1
+array = set(array)
+array = list(array)
+array.sort()
 
-print(count)
+print(array)
+print(array[n-1])
