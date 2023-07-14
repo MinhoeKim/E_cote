@@ -1,53 +1,25 @@
-n = int(input())
+food_times = list(map(int,input().split()))
+k = int(input())
 
-data = list(map(int, input().split()))
-
-add, sub, mul, div = map(int,input().split())
-
-min_value = 1e9
-max_value = -1e9
-
-def dfs(i, now):
-  global min_value, max_value, add, sub, mul, div
+result = 0
+index = 0
+while True:
   
-  
-  
-  if i == n:
-    min_value = min(min_value, now)
-    max_value = max(max_value, now)
-    print('index', i)
-    print('min',min_value)
-    print('max',max_value)
+  print(k)
+  i = index % len(food_times)
+  if food_times[i] != 0:
+    food_times[i] -= 1
+    result = i
+    k -= 1
+    index += 1
+  elif food_times[i] == 0:
+    index += 1
+  print(food_times)
+  if k < 0:
+    break
 
-  else:
-
-    if add > 0:
-      add -= 1
-      print('index', i)
-      print('add',add)
-      print('mul',mul)
-      dfs(i+1, now + data[i])
-      add += 1
-    if sub > 0:
-      sub -= 1
-      print('sub')
-      dfs(i+1, now - data[i])
-      sub +=1
-    if mul > 0:
-      mul -= 1
-      print('index', i)
-      print('add',add)
-      print('mul',mul)
-      dfs(i + 1, now * data[i])
-      mul += 1
-    if div >0:
-      div -= 1
-      print('div')
-      dfs(i + 1, int(now / data[i]))
-      div += 1
+  if len(set(food_times)) <= 1:
+    break
 
 
-dfs(1, data[0])
-
-print(max_value)
-print(min_value)
+print(result)
