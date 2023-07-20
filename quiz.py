@@ -1,94 +1,60 @@
-n = int(input())
+from collections import deque
 
-array = []
-temp = [[0] * n for _ in range(n)]
+n, l, r = map(int, input().split())
 
-
+graph = []
 for _ in range(n):
-    array.append(list(input().split()))
+  graph.append(list(map(int, input().split())))
 
 dx = [-1, 0, 1, 0]
-dy = [0, 1, 0, -1]
+dy = [0, -1, 0, 1]
 
-student = 3
-result = 'no'
+result = 0
 
+def process(x, y, index):
+  united = []
+  united.append((x,y))
 
-def go_straight(i, x, y):
-    global student
-    nx = x + dx[i]
-    ny = y + dy[i]
-    if nx >= 0 and nx < n and ny >= 0 and ny < n:
-        if temp[nx][ny] == 'X':
-            temp[nx][ny] = 'V'
-            go_straight(i, nx, ny)
+  q = deque()
+  q.append((x,y))
+  
+  union[x][y] = index
+  summary = graph[x][y]
+  count = 1
 
-        # if temp[nx][ny] == 'O':
+  while q:
+    x, y = q.popleft()
 
-        if temp[nx][ny] == 'S':
-            student -= 1
-            temp[nx][ny] = 'V'
-            go_straight(i, nx, ny)
-
-
-def view(x, y):
     for i in range(4):
-        nx = x + dx[i]
-        ny = y + dy[i]
-        if nx >= 0 and nx < n and ny >= 0 and ny < n:
-            if array[nx][ny] == 'X' or array[nx][ny] =='S':
-                temp[nx][ny] = 'V'
-                go_straight(i, nx, ny)
+      nx = x + dx[i]
+      ny = y + dy[i]
 
+      if 0 <= nx < n and 0 <= ny < n and union[nx][ny] == -1:
+        if l <= abs(graph[nx][ny] - graph[x][y]) <= r:
+          q.append((nx,ny))
+          union[nx][ny] = index
+          summary += graph[nx][ny]
+          count += 1
+          united.append((nx,ny))
 
-debug = 0
+  for i,j in united:
+    graph[i][j] = summary//count
+  return count
+       
+    
 
+total_count = 0
 
-def dfs(count):
-    global student
-    global result
-    global debug
+while True:
+  union = [[-1] * n for _ in range(n)]
+  index = 0
+  for i in range(n):
+    for j in range(n):
+      if union[i][j] == -1:
+        process(i, j, index)
+        index += 1
+  if index == n*n:
+    break
+  total_count += 1
 
-    if count == 3:
-        for i in range(n):
-            for j in range(n):
-                temp[i][j] = array[i][j]
-
-        for i in range(n):
-            for j in range(n):
-                if temp[i][j] == 'T':
-                    view(i, j)
-                    
-        if debug == 1:
-            print()
-            print()
-            
-            
-        print(student)
-        if student == 3:
-            print('yes')
-            result = 'yes'
-            
-        else:
-            student = 3
-        #   print('no')
-            
-        return
-    for i in range(n):
-
-        for j in range(n):
-            if array[i][j] == 'X':
-                array[i][j] = 'O'
-                count += 1
-                
-                if count == 1 and i == 0 and j == 3:
-                    debug = 1
-
-                dfs(count)
-
-                array[i][j] = 'X'
-                count -= 1
-
-
-dfs(0)
-print(result)
+print(total_count)
