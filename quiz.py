@@ -1,97 +1,105 @@
 ```python
-student = [
-['Junkyu', 50, 60, 100],
-['Sangkeun', 80, 60, 50],
-['Sunyoung', 80, 70, 100],
-['Soong', 50, 60, 90],
-['Haebin', 50, 60, 100],
-['Kangsoo', 60, 80, 100],
-['Donghyuk', 80, 60, 100],
-['Sei', 70, 70, 70],
-['Wonseob', 70, 70, 90],
-['Sanghyun', 70, 70, 80],
-['nsj', 80, 80, 80],
-['Taewhan', 50, 60, 90]]
+from bisect import bisect_left, bisect_right
 
-result = sorted(student,key=lambda x: (-x[1],x[2],-x[3],x[0]))
+# 값이 [left_value, right_value]인 데이터의 개수를 반환하는 함수
+def count_by_range(array, left_value, right_value):
+    #해당값의 오른쪽 인덱스를 반환
+    right_index = bisect_right(array, right_value)
+    #해당값의 왼쪽 인덱스를 반환
+    left_index =  bisect_left(array, left_value)
+    #오른쪽 인덱스- 왼쪽 인덱스는 해당 인덱스 시작과 끝에 있는 값의 갯수이다
+    return right_index - left_index
 
-for i in result:
-    print(i)
+n, x = map(int, input().split())
+array = list(map(int, input().split()))
 
-['Donghyuk', 80, 60, 100]
-['Sangkeun', 80, 60, 50]
-['Sunyoung', 80, 70, 100]
-['nsj', 80, 80, 80]
-['Wonseob', 70, 70, 90]
-['Sanghyun', 70, 70, 80]
-['Sei', 70, 70, 70]
-['Kangsoo', 60, 80, 100]
-['Haebin', 50, 60, 100]
-['Junkyu', 50, 60, 100]
-['Soong', 50, 60, 90]
-['Taewhan', 50, 60, 90]
+count = count_by_range(array, x, x)
+
+if count == 0:
+    print(-1)
+else:
+    print(count)
 ```
 
 ```python
-n = int(input())
-data = list(map(int, input().split()))
-data.sort()
+def binary_search(array: list[int], start, end):
+    while start <= end:
+        mid = (start + end)//2
 
-print(data[(n-1)//2])
+        if array[mid] == mid: #해당 값이 인덱스와 같으면
+            return mid
+        elif array[mid] > mid: #인덱스가 해당 값보다 작으므로 인덱스보다 작은 범위에서 찾는다 
+            end = mid - 1
+        else:
+            start = mid + 1 #인덱스가 해당 값보다 크므로 인덱스보다 큰 범위에서 찾는다
+    return None
 
- 이 문제의 핵심 아이디어는 정확히 중간값에 해당하는 위치의 집에 안테나를 설치했을 때,
- 안테나로부터 모든 집까지의 거리의 총합니 최소가 된다는 점이다.
- 1 2 3 5 8 9
- 이 때, 중간값에 해당하는 위치인 3 혹은 5ㅇㅔ 안테나를 설치하는 경우, 안테나로부터
- 모든 집까지의 거리의 총합이 최소가 된다.
+N = int(input())
+
+array = list(map(int, input().split()))
+
+result = binary_search(array, 0, len(array)-1)
+
+if result == None:
+    print(-1)
+else:
+    print(result)
 ```
 
 ```python
-n = int(input())
+N, C = map(int, input().split())
 
-stages = list(map(int, input().split()))
+x = []
+for i in range(N):
+    x.append(int(input()))
 
-stages.sort()
+x.sort()# 이진 탐섹을 위한 공유기 좌표 정렬
 
-per = []
-remain_user = 0
-passed_user = len(stages)
+start = 1 # 가능한 최소거리(min gap)
+end = x[-1] - x[0]# 가능한 최대 거리(max gap)
+result = 0
 
-for i in range(1,n+1):
-    remain_user = stages.count(i)
-    #해당 스테이지에 머물러 있는 유저의 숫자를 카운트한다.
-    per.append((i,remain_user/passed_user))
-    #머물러있는 유저를 통과한 유저의 수로 나눈 것이 실패율이므로 per에 스테이지와 함께 넣어준다
-    passed_user -= remain_user
-    #다음 스테이지의 실패율 계산을 위해 현재 스테이지의 남아있는 유저 수를 빼준다
-per = sorted(per, key=lambda x:x[1], reverse=True) #내림차순
+while start <= end :
+    mid = (start+end)//2 # mid는 가장 인접한 두 공유기 사이의 거리(gap)를 의미
+    value = x[0]
+    count = 1
+    # 현재의 mid값을 이용해 공유기를 설치
+    for i in range(1,N): # 앞에서 부터 차근차근 설치
+        if x[i] >= value+mid:
+            value = x[i]
+            count += 1
 
-answer = [i[0] for i in per]    
+    if count >= C: # C개 이상의 공유기를 설치할 수 있는 경우, 거리를 감소
+        start = mid +1
+        result = mid #최적의 결과를 저장
+    else:# C개 이상의 공유기를 설치할 수 없는 경우, 거리를 감소
+        end = mid -1
 
+print(result)
+```
+
+```python
+words = ['frodo', 'front', 'frost', 'frozen', 'frame', 'kakao']
+
+queries = ['fro??', '????o', 'fr???', 'fro???', 'pro?']
+
+answer = [0,0,0,0,0]
+
+for i in range(len(queries)):
+    query = queries[i]
+    count = query.count('?')
+    length = len(query)
+    first = query[0]
+    if first == '?':
+        temp = query[count:]
+        for word in words:
+            if len(query)==len(word) and word[count:] == temp:
+                answer[i] += 1
+    else:
+        temp = query[:len(query)-count]
+        for word in words:
+            if len(query) == len(word) and word[:len(query)-count] == temp:
+                answer[i] += 1
+                
 print(answer)
-```
-
-```python
-n = int(input())
-
-card = []
-
-for i in range(n):
-    card.append(int(input()))
-
-card.sort()
-#작은 순서대로 정렬 후 더해 나가는 것이 최솟값이다.
-print(card)
-
-onetwo = card[0]+card[1]
-#최초 시작값 원투
-sum = 0
-sum += onetwo
-#원투를 총합에 더해준다.
-for i in range(2,n):
-   onetwo = onetwo + card[i]
-   #총합에 더해 주었으면 바로 뒤에있는 카드를 더해주어 원투를 갱신한다.
-   sum += onetwo
-   #원투를 총합에 더해준다
-print(sum)
 ```
