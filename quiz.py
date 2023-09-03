@@ -1,196 +1,205 @@
 ```python
-T = int(input())
+# 5
+# 14
+# 1 2 2
+# 1 3 3
+# 1 4 1
+# 1 5 10
+# 2 4 2
+# 3 4 1
+# 3 5 1
+# 4 5 3
+# 3 5 10
+# 3 1 8
+# 1 4 2
+# 5 1 7
+# 3 4 2
+# 5 2 4
 
-while T != 0:
-    n, m = map(int, input().split()) #행, 열
-    array = list(map(int, input().split()))
+INF = int(1e9) #무한을 의미하는 값으로 10억을 설정
 
-    gold = []
-    start = 0
-    #금광이 한줄로 입력되므로 2차원배열로 변환
-    for i in range(n):
-        gold.append(array[start:m*(i+1)]) #i번째 행 추가
-        start += m #다음 행의 시작점
+#노드의 개수 및 간선의 개수를 입력받기
+n = int(input())
+m = int(input())
+# 2차원 리스트(그래프 표현,인덱스 1을 첫번째로 하기위해 n+1)를 만들고, 모든 값을 무한으로 초기화
+graph = [[INF]*(n + 1) for _ in range(n + 1)]
 
-    row = None
+for a in range(1, n+1):
+  for b in range(1, n+1):
+    #자기 자신에서 자기 자신으로 가는 비용은 0으로 초기화
+    if a == b:
+      graph[a][b] = 0
 
-    del_max = 0
-    #맨 처음 열에서 가장 큰 수를 시작점으로 한다
-    for i in range(n):
-        if del_max < gold[i][0]:
-            del_max = gold[i][0]
-            row = i
+#각 간선에 대한 정보를 입력받아, 그 값으로 초기화
+for _ in range(m):
+  #A에서 B로 가는 비용은 C라고 설정
+  a, b, c = map(int, input().split())
+  #가장 짧은 간선 정보만 저장
+  if c < graph[a][b]:
+    graph[a][b] = c
 
-    del_sum = del_max
+#점화식에 따라 플로이드 워셜 알고리즘을 수행
+for k in range(1, n+1):
+  for a in range(1, n+1):
+    for b in range(1, n+1):
+      graph[a][b] = min(graph[a][b], graph[a][k] + graph[k][b])
 
-    #열의 갯수만큼 반복
-    for j in range(1,m):
-        if row == 0: # 맨 처음 행일때
-            compare = []
-            compare.extend([gold[row][j], gold[row+1][j]])#다음 열의 중간쪽,위쪽 비교하기 위해 리스트 형태로 넣어준다
-            del_value = max(compare)
-            del_sum += del_value
-            max_index =  compare.index(del_value)
-
-            row = row + max_index #다음 열과 비교하기위한 현재 최대값의 행 위치
-
-        elif row == n-1: #맨 마지막 행일때
-            compare = []
-            compare.extend([gold[row-1][j],gold[row][j]])#다음열의 아래쪽 중간쪽 비교, append는 하나의 원소만 넣을 수 있으므로 extend를 이용해 리스트로 넣어준다
-            del_value = max(compare)
-            del_sum += del_value
-            max_index =  compare.index(del_value)
-
-            row = row + max_index -1#다음 열과 비교하기위한 현재 최대값의 행 위치
-
-        else:#처음과 마지막 사이일 때
-            compare = []
-            compare.extend([gold[row-1][j],gold[row][j],gold[row+1][j]]) #다음 열의 위쪽, 중간쪽, 아래쪽 비교
-            del_value = max(compare)
-            del_sum += del_value
-            max_index =  compare.index(del_value)
-
-            row = row + max_index -1#다음 열과 비교하기위한 현재 최대값의 행 위치
-
-    print(del_sum)
-
-    T -= 1
+#수행된 결과를 출력
+for a in range(1, n+1):
+  for b in range(1, n+1):
+    # 도달할 수 없는 경우 0 을 출력
+    if graph[a][b] == INF:
+      print(0, end=" ")
+      #도달할 수 있는 경우 거리를 출력
+    else:
+      print(graph[a][b], end=" ")
+  print()
 ```
 
 ```python
+INF = int(1e9)# 무한을 의미하는 값으로 10억을 설정
+
+#노드의 개수, 간선의 개수를 입력받기
+n, m = map(int, input().split())
+# 2차원 리스트(그래프표현)를 만들고, 모든 값을 무한으로 초기화
+graph = [[INF]*(n+1) for _ in range(n+1)]
+
+#자기자신에서 자기자신으로 가는 비용은 0으로 초기화
+for a in range(1, n+1):
+    for b in range(1,n+1):
+        if a == b:
+            graph[a][b] = 0
+
+#각 간선에 대한 정보를 입력받아, 그 값으로 초기화
+for _ in range(m):
+   #a에서 b로 가는 비용을 1로 설정
+    a, b = map(int, input().split())
+    graph[a][b] = 1
+
+#점화식에 따라 플로이드 워셜 알고리즘을 수행
+for k in range(1, n+1):
+    for a in range(1, n+1):
+        for b in range(1, n+1):
+            graph[a][b] = min(graph[a][b], graph[a][k] + graph[k][b])
+
+result = 0
+# 각 학생을 번호에 따라 한 명씩 확인하며 도달 가능한지 체크
+for i in range(1 , n+1):
+    count = 0
+    for j in range(1, n+1):
+        if graph[i][j] != INF or graph[j][i] != INF:
+          #i에서 j로 가거나 j에서 i로 가는 경로가 있으면 비교가 가능하므로 카운트해준다
+            count += 1
+        if count == n: #i노드가 모든노드와 비교가능하면 정확한 순위를 알 수 있다.
+            result +=1
+
+print(result)
+```
+
+```python
+import heapq
+
+INF = int(1e9)
+
+dx = [-1, 0, 1, 0]
+dy = [0, 1, 0, -1]
+
+#노드의 개수를 입력받기
 n = int(input())
-tower = []
+#전체 맵 정보를 입력받기
+graph = []
 for i in range(n):
-    tower.append(list(map(int, input().split())))
+  graph.append(list(map(int, input().split())))
 
-temp = [[]]# 1행부터 시작하기 위해 0행을 빈 리스트로 초기화한다
+#최단거리 테이블을 모두 무한을 ㅗ초기화
+distance = [[INF] * n for _ in range(n)]
 
-for i in range(n-1):# 마지막 줄을 빼고 템프에 저장
-    temp.append(tower[i])
+x, y = 0, 0
+# 시작 노드로 가기 위한 비용은 (0,0) 위치의 값으로 설정하여, 큐에 삽입
+q = [(graph[x][y], x, y)]
+distance[x][y] = graph[x][y]
 
-for i in range(n-1, 0, -1): #n-1부터  1까지 -1스텝으로 진행 (행)
-    for j in range(len(tower[i])-1):#j를 (타워행의길이-1)한만큼 반복 (열)
-        if tower[i][j] > tower[i][j+1]:#현재 원소가 다음 원소의 값보다 크면
-            temp[i][j] = tower[i][j]+temp[i][j]#부모 노드를 큰값과 더한 값으로 갱신한다
-        else:
-            temp[i][j] = tower[i][j+1]+temp[i][j]#부모 노드를 큰값과 더한 값으로 갱신한다
+#다익스트라 알고리즘 수행
+while q:
+	#가장 최단 거리가 짧은 노드에 대한 정보를 꺼내기
+  dist, x, y = heapq.heappop(q)
+	#현재 노드가  이미 처리된 적이 있는 노드라면 무시
+  if distance[x][y] < dist:
+    continue
+	# 현재 노드와 연결된 다른 인접한 노드들을 확인
+  for i in range(4):
+    nx = x + dx[i]
+    ny = y + dy[i]
+		#맵의 범위를 벗어나는 경우 무시
+    if nx < 0 or nx >= n or ny < 0 or ny >= n:
+      continue
+		
+    cost = dist + graph[nx][ny]
+		#현재 노드를 거쳐서, 다른 노드로 이동하는 거리가 더 짧은 경우
+    if cost < distance[nx][ny]:
+      distance[nx][ny] = cost
+      heapq.heappush(q, (cost, nx, ny))
 
-print(*temp[1])# 루트 노드를 출력
+print(distance[n - 1][n - 1])
 ```
 
 ```python
-N = int(input())
+import heapq
 
-array = []
-for i in range(N):
-  t, p = map(int, input().split())
-  array.append((t,p))
-z = len(array)
-p_sum_max = 0#최대 수익
-day = 0 #처음 일을 시작할 날짜
+INF = int(1e9)#무한을 의미하는 값으로 10억을 설정
 
-for t0, p0 in array: #일의 시간, 수익
-  
-  index = day #현재 일을 시작할 날짜
-  day += 1 #다음루프를 위해 일을 시작할 날짜를 1 증가시킨다.
-  p_sum = 0#일을 시작한 날짜의 총 수입
-  
-  if day+t0 > len(array)-1:# 다음 일의 위치의 인덱스가 초과된다면
-    break
-  else:#초과되지 않는다면
-    p_sum += p0# 현재 일의 수익을 더해준다
-    index += t0 #현재 일을 시작한 날짜에 수행시간을 더해 다음 일의 인덱스를 구한다
-    
-  while True:
-    if index > len(array)-1:#현재 인덱스가 범위를 초과하면
-      break
-    else:#초과하지 않는다면
-      t1, p1 = array[index]#array[index]의 일의 시간, 수익
-      
-    if index == len(array)-1:#마지막번재 인덱스이고
-      
-      if t1 > 1:#일이 하루넘게 걸린다면
-        break
-      else:#하루 넘게 걸리지 않는다면
-        p_sum += p1#수행한 일의 수익을 더해준다
-        index += t1#일을 수행하고 난 후 다음있을 일의 인덱스
-        
-    else:#마지막 번째 인덱스가 아니라면
-      p_sum += p1#수행한 일의 수익을 더해준다
-      index += t1#일을 수행하고 난 후 다음있을 일의 인덱스
+#노드의 개수, 간선의 개수를 입력받기
+n, m = map(int, input().split())
+#시작 노드를 1번 헛간으로 설정
+start = 1
+#각 노드에연결되어 있는 노드에 대한 정보를  담는 리스트를 만들기
+graph = [[] for i in range(n+1)]
+#최단 거리 테이블을 모두 무한으로 초기화
+distance = [INF] * (n+1)
+#모든 간선 정보를 입력받기
+for _ in range(m):
+  a,b = map(int, input().split())
+  #a번 노드와 b번 노드의 이동 비용이 1이라는 의미(양방형)
+  graph[a].append((b,1))
+  graph[b].append((a,1))
 
-  p_sum_max = max(p_sum_max,p_sum)#시작한 일의 날짜들 중에서 최댓값을 구한다
-  
-print(p_sum_max)
-```
+def dijkstra(start):
+  q = []
+  #시작 노드로 가기 위한 최단 경로는 0으로 설정하여, 큐에 삽입
+  heapq.heappush(q, (0, start))
+  distance[start] = 0
+  while q:#큐가 비어있지 않다면
+    #가장 최단 거리가 짧은 노드에 대한 정보를 꺼내기
+    dist, now =  heapq.heappop(q)
+    #현재 노드가 이미 처리된 적이 있는 노드라면 무시(우선순위 큐이므로 무한이었던 거리가
+#현재 원소의 거리보다 짧아졌다는 의미는 거리가 더 짧은 경로가 나와가 이미 그 노드를 처리했다는 의미이다.) 
+    if distance[now] < dist:
+      continue
+    #현재 노드와 연결된 다른 인접한 노드들을 확인
+    for i in graph[now]:
+      cost = dist + i[1]
+      #현재 노드를 거쳐서, 다른 노드로 이동하는 거리가 더 짧은 경우
+      if cost < distance[i[0]]:
+        distance[i[0]] = cost
+        heapq.heappush(q,(cost,i[0]))
 
-```python
-n = int(input())
+#다익스트라 알고리즘 수행
+dijkstra(start)
 
-soldier = list(map(int, input().split()))
+#최단 거리가 가장 먼 노드 번호(동빈이가 숨을 헛간의 번호)
+max_node = 0
+#도달할 수 있는 노드 중에서, 최단 거리가 가장 먼 노드와의 최단거리
+max_distance = 0
+#최단 거리가 가장 먼 노드와의 최단 거리와 동일한 최단 거리를 가지는 노드들의 리스트
+result = []
 
-count = 0
+for i in range(1, n+1):
+  if max_distance < distance[i]:
+    max_node = i
+    max_distance = distance[i]
+    result = [max_node]
+  elif max_distance == distance[i]:
+    result.append(i)
 
-for i in range(len(soldier)-1):
-  pre = soldier[i]
-  next = soldier[i+1]
-  if pre < next:
-    count +=1
-
-print(count)
-```
-
-```python
-n = int(input())
-
-array = []
-
-array.append(1)
-count = 1
-while len(array) <= n:  # 원소의 갯수가 n보다 작거나 같으면 2,3,5 의 배수를 append
-    array.append(2*count)
-    array.append(3*count)
-    array.append(5*count)
-    array = set(array)  # 중복제거
-    array = list(array)  # 다시 리스트 변환
-    count += 1
-print(count)
-
-array.sort()
-
-print(array)
-print(array[n-1])#n번째 못생긴 수 출력
-```
-
-
-#최소 편집 거리 계산을 위한 다이나믹 프로그래밍
-def edit_dist(str1, str2):
-    n = len(str1)
-    m = len(str2)
-
-    #다이나믹 프로그래밍을 위한 2차원 dp테이블초기화
-    dp = [[0] * (m+1) for _ in range(n+1)]
-
-    #dp테이블 초기 설정
-    for i in range(1, n + 1):
-        dp[i][0] = i
-    for j in range(1, m + 1):
-        dp[0][j] = j
-
-    #최소 편집거리 계산
-    for i in range(1, n+1):
-        for j in range(1, m+1):
-            #문자가 같다면, 원쪽 위에 해당하는 수를 그대로 대입
-            if str1[i - 1] == str2[j - 1]:
-                dp[i][j] = dp[i-1][j-1]
-            #문자가 다르다면, 3가지 경우 중에서 최솟값 찾기
-            else:#삽입(왼쪽), 삭제(위쪽), 교체(왼쪽 위) 중에서  최소 비용을 찾아 대입
-                dp[i][j] = 1 + min(dp[i][j-1], dp[i-1][j], dp[i-1][j-1])
-
-    return dp[n][m]
-
-str1 = input()
-str2 = input()
-
-print(edit_dist(str1, str2))
+print(max_node, max_distance, len(result))
 ```
